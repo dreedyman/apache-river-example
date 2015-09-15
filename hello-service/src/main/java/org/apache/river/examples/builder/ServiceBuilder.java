@@ -44,6 +44,10 @@ public class ServiceBuilder {
         return this;
     }
 
+    public ServiceBuilder attributes() throws ConfigurationException {
+        return attributes("attributes");
+    }
+
     public ServiceBuilder attributes(String entry) throws ConfigurationException {
         return attributes(component, entry);
     }
@@ -53,6 +57,10 @@ public class ServiceBuilder {
         return this;
     }
 
+    public ServiceBuilder groups() throws ConfigurationException {
+        return groups("groups");
+    }
+
     public ServiceBuilder groups(String entry) throws ConfigurationException {
         return groups(component, entry);
     }
@@ -60,6 +68,10 @@ public class ServiceBuilder {
     public ServiceBuilder groups(String component, String entry) throws ConfigurationException {
         service.setGroups(component, entry);
         return this;
+    }
+
+    public ServiceBuilder exporter() throws ConfigurationException {
+        return exporter("exporter");
     }
 
     public ServiceBuilder exporter(String entry) throws ConfigurationException {

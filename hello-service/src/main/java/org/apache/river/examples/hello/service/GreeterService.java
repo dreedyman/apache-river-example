@@ -57,10 +57,14 @@ public class GreeterService implements Greeter, Startable, DestroyAdmin {
         logger.info("Hello service starting...");
         Configuration config = ConfigurationProvider.getInstance(args);
 
+        /*
+         * Use a builder pattern to assemble thr service's attributes, groups,
+         * exporter and discovery management. Then export the service and join the network
+         */
         service = service(config).usingComponent(GREETER)
-                      .attributes("attributes")
-                      .groups("groups")
-                      .exporter("exporter")
+                      .attributes()
+                      .groups()
+                      .exporter()
                       .discoveryManagement()
                       .build().exportAndJoin(this);
 
