@@ -1,0 +1,22 @@
+
+# Project Files
+###################
+*.class
+build/
+.gradle/
+
+#IDE Files   
+###################
+#IntelliJ:
+*.ipr
+*.iml
+*.iws
+.idea/
+
+
+# OS generated files #
+######################
+.DS_Store*
+Icon?
+Thumbs.db
+

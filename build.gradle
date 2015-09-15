@@ -1,0 +1,79 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership. The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License. You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+*/
+
+allprojects {
+	ext {
+		riverVersion = "3.0"
+		riverHome = "${rootProject.projectDir.path}/apache-river-dist/apache-river-${riverVersion}"
+	}	
+}
+
+subprojects {
+    apply plugin: 'java'
+    apply plugin: "maven"
+    apply plugin: "maven-publish"
+
+    group = 'org.apache.river.examples'
+    version = '1.0'
+
+    configurations {
+        river_platform
+    }
+
+    dependencies {
+        river_platform "org.apache.river:start:${riverVersion}"
+        river_platform "net.jini:jsk-platform:${riverVersion}"
+        river_platform "net.jini:groovy-config:${riverVersion}"
+    }
+
+    compileJava.options.encoding = 'UTF-8'
+
+    publishing {
+        publications {
+            mavenJava(MavenPublication) {
+                from components.java
+            }
+        }
+    }
+
+    repositories {
+        mavenLocal()
+        mavenCentral()            
+    }
+ }
+
+task getRiverDist() {
+    def outputDir = file("${rootProject.projectDir.path}/apache-river-dist")
+	String riverDist = "apache-river-${riverVersion}-bin.zip"
+	outputs.files file("$outputDir/$riverDist")
+    def zipFile = file("river-dist/$riverDist")
+    doFirst {
+        outputDir.mkdirs()
+		ant.get(src: "http://apache.mirrors.ionfish.org/river/river-${riverVersion}/$riverDist",
+		        dest: outputDir)	
+	    copy { 
+            from zipTree(zipFile)
+            into outputDir		
+	    }
+    }
+}
+
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '2.6'
+}

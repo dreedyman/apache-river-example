@@ -1,0 +1,52 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership. The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License. You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+*/
+apply plugin: 'java'
+
+apply from: file("${rootProject.projectDir.path}/gradle/startme.gradle")
+
+configurations {
+    testRuntime.extendsFrom river_platform
+}
+
+dependencies {
+	compile project(":hello-api")
+	compile "net.jini:jsk-lib:${riverVersion}"
+    testCompile "junit:junit:4.12"
+}
+
+startme {
+    dependsOn([":hello-api:install", ":service-registrar:startme"])
+    starterConfig = file("${projectDir.path}/config/StartHelloService.groovy")
+    bootClassPath = configurations.river_platform.collect {it.path}.join(File.pathSeparator)
+    systemProperties = ["java.security.policy" : "${rootProject.rootDir.path}/config/server.policy",
+                        "java.util.logging.config.file": "${rootProject.rootDir.path}/config/logging.properties"]
+    spawn = true
+}
+
+test {
+    dependsOn "startme"
+    systemProperty "client.config", file("${projectDir.path}/config/HelloTestConfig.groovy").path
+    systemProperty "java.rmi.server.useCodebaseOnly", "false"
+    systemProperty "java.security.policy", "${rootProject.rootDir.path}/config/server.policy"
+    testLogging {
+        events "passed", "skipped", "failed"/*, "standardOut", "standardError"*/
+    }
+    finalizedBy "stopme", ":service-registrar:stopme"
+}
+
+
