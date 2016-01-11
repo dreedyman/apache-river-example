@@ -4,6 +4,9 @@
 *.class
 build/
 .gradle/
+logs/
+*.log
+apache-river-dist/
 
 #IDE Files   
 ###################
