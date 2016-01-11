@@ -24,8 +24,16 @@ configurations {
 }
 
 dependencies {
-	compile project(":hello-api")
-	compile "net.jini:jsk-lib:${riverVersion}"
+    compile project(":hello-api")
+
+    //compile "net.jini:jsk-lib:${riverVersion}"
+    compile files("${riverHome}/lib/jsk-lib.jar")
+    compile files("${riverHome}/lib/jsk-platform.jar")
+    compile files("${riverHome}/lib/jsk-resources.jar")
+
+    compile files("${riverHome}/lib/groovy-config.jar")
+    compile "org.codehaus.groovy:groovy:2.4.5"
+
     testCompile "junit:junit:4.12"
 }
 

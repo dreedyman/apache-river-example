@@ -20,8 +20,13 @@ apply plugin: 'java'
 apply plugin: 'war'
 	
 dependencies {
-	compile project(":hello-api")
-	compile "net.jini:jsk-lib:${riverVersion}"		
+    compile project(":hello-api")
+
+    //compile "net.jini:jsk-lib:${riverVersion}"
+    compile files("${riverHome}/lib/jsk-lib.jar")
+    compile files("${riverHome}/lib/jsk-platform.jar")
+    compile files("${riverHome}/lib/jsk-resources.jar")
+
     compile "javax:javaee-web-api:6.0"
 }
 

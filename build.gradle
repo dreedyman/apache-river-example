@@ -36,9 +36,15 @@ subprojects {
     }
 
     dependencies {
-        river_platform "org.apache.river:start:${riverVersion}"
-        river_platform "net.jini:jsk-platform:${riverVersion}"
-        river_platform "net.jini:groovy-config:${riverVersion}"
+        //river_platform "org.apache.river:start:${riverVersion}"
+        river_platform files("${riverHome}/lib/start.jar")
+
+        //river_platform "net.jini:jsk-platform:${riverVersion}"
+        river_platform files("${riverHome}/lib/jsk-platform.jar")
+        river_platform files("${riverHome}/lib/jsk-resources.jar")
+
+        //river_platform "net.jini:groovy-config:${riverVersion}"
+        river_platform files("${riverHome}/lib/groovy-config.jar")
     }
 
     compileJava.options.encoding = 'UTF-8'
