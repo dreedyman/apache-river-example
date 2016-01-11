@@ -70,6 +70,7 @@ class StartMe extends DefaultTask {
         args << "-Dproject.classpath=${projectClasspath}"
         args << "-Dproject.dir=${project.projectDir.path}"
         args << "-Dproject.version=${project.version}"
+        args << "-Driver.version=${project['riverVersion']}"
         args << '-Djava.protocol.handler.pkgs="net.jini.url"'
         args << "-Djava.rmi.server.useCodebaseOnly=false"
 

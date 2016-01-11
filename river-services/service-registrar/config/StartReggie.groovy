@@ -29,12 +29,13 @@ class StartReggie {
 
     ServiceDescriptor[] getServiceDescriptors() {
         String policy = System.getProperty("java.security.policy")
+        String riverVersion = System.getProperty("river.version")
 
         String projectDir = System.getProperty("project.dir")
         String configPath = "${projectDir}/config"
         String localRepo = "${System.getProperty("user.home")}/.m2/repository"
-        String reggieDl = "org/apache/river/reggie-dl/3.0/reggie-dl-3.0.jar"
-        String jskDl = "net/jini/jsk-dl/3.0/jsk-dl-3.0.jar"
+        String reggieDl = "org/apache/river/reggie-dl/${riverVersion}/reggie-dl-${riverVersion}.jar"
+        String jskDl = "net/jini/jsk-dl/${riverVersion}/jsk-dl-${riverVersion}.jar"
         String port="8090"
 
         def descriptors = []
@@ -45,13 +46,13 @@ class StartReggie {
 
         descriptors << new NonActivatableServiceDescriptor("",
                                                            policy,
-                                                           "${localRepo}/org/apache/river/tools/3.0/tools-3.0.jar",
+                                                           "${localRepo}/org/apache/river/tools/${riverVersion}/tools-${riverVersion}.jar",
                                                            "org.apache.river.tool.ClassServer",
                                                            classServerArgs as String[])
 
         descriptors << new NonActivatableServiceDescriptor("$codebase/$reggieDl $codebase/$jskDl",
                                                            policy,
-                                                           "${localRepo}/org/apache/river/reggie/3.0/reggie-3.0.jar:${localRepo}/net/jini/jsk-lib/3.0/jsk-lib-3.0.jar",
+                                                           "${localRepo}/org/apache/river/reggie/${riverVersion}/reggie-${riverVersion}.jar:${localRepo}/net/jini/jsk-lib/${riverVersion}/jsk-lib-${riverVersion}.jar",
                                                            "org.apache.river.reggie.TransientRegistrarImpl",
                                                            reggieConfigArg as String[])
 

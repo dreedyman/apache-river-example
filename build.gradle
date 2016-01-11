@@ -18,7 +18,7 @@
 
 allprojects {
 	ext {
-		riverVersion = "3.0"
+		riverVersion = "3.0.0"
 		riverHome = "${rootProject.projectDir.path}/apache-river-dist/apache-river-${riverVersion}"
 	}	
 }

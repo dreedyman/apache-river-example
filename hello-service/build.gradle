@@ -35,7 +35,7 @@ startme {
     bootClassPath = configurations.river_platform.collect {it.path}.join(File.pathSeparator)
     systemProperties = ["java.security.policy" : "${rootProject.rootDir.path}/config/server.policy",
                         "java.util.logging.config.file": "${rootProject.rootDir.path}/config/logging.properties"]
-    spawn = true
+    spawn = false
 }
 
 test {
