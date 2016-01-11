@@ -6,6 +6,7 @@ build/
 .gradle/
 logs/
 *.log
+*.log.lck
 apache-river-dist/
 
 #IDE Files   
