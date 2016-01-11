@@ -18,6 +18,9 @@
 
 package org.apache.river.examples.hello.api;
 
+import net.jini.admin.Administrable;
+import org.apache.river.admin.DestroyAdmin;
+
 import java.io.IOException;
 import java.rmi.Remote;
 
@@ -33,7 +36,7 @@ import java.rmi.Remote;
  * for instructions on how to build and view the complete tutorial.
  * 
  */
-public interface Greeter extends Remote {
+public interface Greeter extends Administrable, DestroyAdmin, Remote {
     /**
      * Say 'Hello' to the client with the name provided.
      * @param name The name of the client.

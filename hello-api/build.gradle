@@ -16,6 +16,8 @@
  * limitations under the License.
 */
 
-
+dependencies {
+    compile "net.jini:jsk-dl:${riverVersion}"
+}
 
 

@@ -18,6 +18,7 @@
 
 apply from: file("${rootProject.projectDir.path}/gradle/startme.gradle")
 project.tasks.remove(jar)
+project.tasks.remove(install)
 
 dependencies {
     runtime "org.apache.river:reggie${riverVersion}"
@@ -27,7 +28,7 @@ startme {
     starterConfig = file("${projectDir.path}/config/StartReggie.groovy")
     bootClassPath = configurations.river_platform.collect {it.path}.join(File.pathSeparator)
     systemProperties = ["java.security.policy" : "${rootProject.rootDir.path}/config/server.policy",
-                        "java.util.logging.config.file": "${rootProject.rootDir.path}/config/logging.properties"]
+                        "java.util.logging.config.file": "${projectDir.path}/config/reggie-logging.properties"]
     spawn = true
 }
 

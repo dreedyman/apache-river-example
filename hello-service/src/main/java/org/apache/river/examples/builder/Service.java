@@ -27,9 +27,14 @@ import net.jini.id.UuidFactory;
 import net.jini.lease.LeaseRenewalManager;
 import net.jini.lookup.JoinManager;
 import org.apache.river.config.Config;
+import org.apache.river.examples.hello.api.GreeterAdmin;
 
+import javax.management.*;
 import java.io.IOException;
+import java.lang.management.ManagementFactory;
 import java.rmi.Remote;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * @author Dennis Reedy
@@ -42,6 +47,8 @@ public class Service {
     private Object proxy;
     private Exporter exporter;
     private JoinManager joinManager;
+    private ServiceID myServiceId;
+    private static final Logger logger = Logger.getLogger(Service.class.getName());
 
     public Entry[] getAttributes() {
         return attributes;
@@ -90,12 +97,40 @@ public class Service {
     public Service exportAndJoin(Remote remote) throws IOException, ConfigurationException {
         proxy = exporter.export(remote);
         Uuid myUuid = UuidFactory.generate();
-        ServiceID myServiceId = new ServiceID(myUuid.getMostSignificantBits(), myUuid.getLeastSignificantBits());
+        myServiceId = new ServiceID(myUuid.getMostSignificantBits(), myUuid.getLeastSignificantBits());
         joinManager = new JoinManager(proxy, attributes, myServiceId, discoveryManagement, new LeaseRenewalManager(), configuration);
         return this;
     }
 
     public JoinManager getJoinManager() {
         return joinManager;
+    }
+
+    public void registerMBean(GreeterAdmin greeterAdmin) {
+        try {
+            MBeanServer mBeanServer = ManagementFactory.getPlatformMBeanServer();
+            ObjectName objectName = greeterAdmin.getObjectName();
+            unregisterMBean(objectName, mBeanServer);
+            mBeanServer.registerMBean(greeterAdmin, greeterAdmin.getObjectName());
+            logger.info("Registered "+objectName.toString()+" to platform MBeanServer");
+        } catch (Exception e) {
+            logger.log(Level.SEVERE, "Unable to register MBean", e);
+        }
+    }
+
+    public void unregisterMBean(GreeterAdmin greeterAdmin) {
+        try {
+            unregisterMBean(greeterAdmin.getObjectName(), ManagementFactory.getPlatformMBeanServer());
+        } catch (Exception e) {
+            logger.log(Level.SEVERE, "Unable to unregister MBean", e);
+        }
+    }
+
+    private void unregisterMBean(ObjectName objectName, MBeanServer mBeanServer) throws MalformedObjectNameException,
+                                                                                        MBeanRegistrationException,
+                                                                                        InstanceNotFoundException {
+        if(mBeanServer.isRegistered(objectName)) {
+            mBeanServer.unregisterMBean(objectName);
+        }
     }
 }

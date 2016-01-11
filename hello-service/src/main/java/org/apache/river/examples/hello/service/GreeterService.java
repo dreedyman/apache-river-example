@@ -20,13 +20,14 @@ package org.apache.river.examples.hello.service;
 import net.jini.config.Configuration;
 import net.jini.config.ConfigurationException;
 import net.jini.config.ConfigurationProvider;
-import org.apache.river.admin.DestroyAdmin;
 import org.apache.river.api.util.Startable;
 import org.apache.river.examples.builder.Service;
 import org.apache.river.examples.hello.api.Greeter;
+import org.apache.river.examples.hello.api.GreeterAdmin;
 import org.apache.river.start.LifeCycle;
 
 import java.io.IOException;
+import java.rmi.RemoteException;
 import java.util.logging.Logger;
 
 import static org.apache.river.examples.builder.ServiceBuilder.service;
@@ -41,11 +42,12 @@ import static org.apache.river.examples.builder.ServiceBuilder.service;
  * for instructions on how to build and view the complete tutorial.
  * 
  */
-public class GreeterService implements Greeter, Startable, DestroyAdmin {
+public class GreeterService implements Greeter, Startable {
     private static final String GREETER = "org.apache.river.examples.hello.greeter";
     private final String[] args;
     private final LifeCycle lifeCycle;
     private Service service;
+    private GreeterAdmin greeterAdmin;
     private static final Logger logger = Logger.getLogger(GreeterService.class.getName());
 
     public GreeterService(final String[] args, final LifeCycle lifeCycle) throws ConfigurationException, IOException {
@@ -68,6 +70,12 @@ public class GreeterService implements Greeter, Startable, DestroyAdmin {
                       .discoveryManagement()
                       .build().exportAndJoin(this);
 
+        /* Create the Greeter administration object */
+        greeterAdmin = new GreeterAdmin((Greeter)service.getProxy());
+
+        /* Register the administration object as an MBean */
+        service.registerMBean(greeterAdmin);
+
         logger.info("Hello service has been started successfully.");
     }
 
@@ -78,6 +86,11 @@ public class GreeterService implements Greeter, Startable, DestroyAdmin {
     @Override public void destroy() {
         service.getJoinManager().terminate();
         service.getExporter().unexport(true);
+        service.unregisterMBean(greeterAdmin);
         lifeCycle.unregister(this);
+    }
+
+    @Override public Object getAdmin() throws RemoteException {
+        return greeterAdmin;
     }
 }

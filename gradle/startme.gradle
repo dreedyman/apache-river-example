@@ -40,7 +40,7 @@ class StartMe extends DefaultTask {
     boolean debug
 
     @TaskAction
-    def bootMe() {
+    def startMe() {
 
         StringBuilder  cp = new StringBuilder()
         cp.append("${project.buildDir}/libs/${project.name}-${project.version}.jar")
@@ -79,6 +79,11 @@ class StartMe extends DefaultTask {
         }
         args << "org.apache.river.start.ServiceStarter"
         args << "${starterConfig.path}"
+
+        File logs = new File("${project.projectDir.path}/logs")
+        if(!logs.exists()) {
+            logs.mkdirs()
+        }
 
         if(project.logger.isInfoEnabled()) {
             StringBuilder sb = new StringBuilder()
@@ -127,8 +132,9 @@ class StopMePlugin implements Plugin<Project> {
                 JMXConnector jmxc = JMXConnectorFactory.connect(jmxUrl, null);
                 MBeanServerConnection serverConnection = jmxc.getMBeanServerConnection()
                 serverConnection.queryNames(null, null).each { mBean ->
-                    if (mBean.domain == "sorcer.core.provider") {
+                    if (mBean.domain == "org.apache.river.examples") {
                         String id = mBean.getKeyProperty("projectId")
+                        println "domain: ${mBean.domain}, id: $id"
                         if (id != null && id == projectId) {
                             serverConnection.invoke(mBean, "destroy", null, null)
                         }

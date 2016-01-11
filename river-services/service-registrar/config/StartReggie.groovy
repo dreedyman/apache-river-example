@@ -42,7 +42,8 @@ class StartReggie {
         def reggieConfigArg = ["${configPath}/ReggieConfig.groovy"]
         def codebase = "http://${InetAddress.localHost.hostAddress}:$port"
         def classServerArgs = ["-port", port,
-                               "-dir", "${localRepo}"]
+                               "-dir", "${localRepo}",
+                               "-verbose"]
 
         descriptors << new NonActivatableServiceDescriptor("",
                                                            policy,

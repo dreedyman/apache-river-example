@@ -26,6 +26,7 @@ task browser(type: JavaExec) {
     main = "org.apache.river.example.browser.Browser"
     classpath = sourceSets.main.runtimeClasspath
     systemProperty "java.security.policy", "${rootProject.rootDir.path}/config/browser.policy"
+    systemProperty "java.util.logging.config.file", "${rootProject.rootDir.path}/config/logging.properties"
 }
 
 

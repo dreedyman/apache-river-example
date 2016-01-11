@@ -33,14 +33,16 @@ class StartHelloService {
         String projectDir = System.getProperty("project.dir")
         String configPath = "${projectDir}/config"
         String version = System.getProperty("project.version")
+        String riverVersion = System.getProperty("river.version")
         String apiPath = "org/apache/river/examples/hello-api/${version}/hello-api-${version}.jar"
+        String jskDl = "net/jini/jsk-dl/${riverVersion}/jsk-dl-${riverVersion}.jar"
         String port="8090"
 
         def descriptors = []
         def configArg = ["${configPath}/HelloServiceConfig.groovy"]
         def codebase = "http://${InetAddress.localHost.hostAddress}:$port"
 
-        descriptors << new NonActivatableServiceDescriptor("$codebase/$apiPath",
+        descriptors << new NonActivatableServiceDescriptor("$codebase/$apiPath $codebase/$jskDl",
                                                            policy,
                                                            "${System.getProperty("project.classpath")}",
                                                            "org.apache.river.examples.hello.service.GreeterService",
